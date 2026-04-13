@@ -71,6 +71,7 @@ const HARDCODED_PROFILE = {
   dateOfBirth: '1995-09-15',
   homeLanguage: 'Spanish/English',
   cellNumber: '+1 626 8247898',
+  nationality: 'Dominican',
 };
 
 async function getCurrentUser(): Promise<string | null> {
