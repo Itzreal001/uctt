@@ -164,8 +164,18 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem; /* 16px - base mobile padding */
     padding-right: 1rem;
+    max-width: 100%;
+  }
+
+  @media (max-width: 639px) {
+    /* Phone screens: maintain comfortable spacing without squeezing content */
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      max-width: 100%;
+    }
   }
 
   .flex {

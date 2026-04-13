@@ -218,32 +218,54 @@ export default function Dashboard() {
       )}
 
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
           {/* Portal header */}
-          <div className="bg-[#003366] text-white rounded-xl p-6 mb-8 flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-white/20 flex items-center justify-center flex-shrink-0">
+          <div className="bg-[#003366] text-white rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+              <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-full overflow-hidden bg-white/20 flex items-center justify-center flex-shrink-0">
                 {profile.photoURL
                   ? <img src={profile.photoURL} alt={profile.displayName} className="w-full h-full object-cover" />
-                  : <User className="w-8 h-8 text-white" />}
+                  : <User className="w-6 sm:w-8 h-6 sm:h-8 text-white" />}
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">Welcome back, {profile.preferredName || profile.firstName}!</h1>
-                <p className="text-blue-200 text-sm">
-                  Logged in as: <span className="font-mono font-semibold text-white">{profile.studentNumber || profile.username}</span>
-                  {profile.lastLogin && <> &nbsp;|&nbsp; Last login: {new Date(profile.lastLogin).toLocaleString()}</>}
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl font-bold leading-tight truncate">Welcome back, {profile.preferredName || profile.firstName}!</h1>
+                <p className="text-blue-200 text-xs sm:text-sm mt-1 truncate">
+                  <span className="font-mono font-semibold text-white">{profile.studentNumber || profile.username}</span>
                 </p>
+                {profile.lastLogin && (
+                  <p className="text-blue-200 text-xs mt-0.5 hidden sm:block">Last login: {new Date(profile.lastLogin).toLocaleString()}</p>
+                )}
               </div>
             </div>
             <Button onClick={handleSignOut} variant="outline"
-              className="border-white/40 text-white hover:bg-white/10 hover:text-white">
+              className="border-white/40 text-white hover:bg-white/10 hover:text-white w-full sm:w-auto text-sm sm:text-base">
               <LogOut className="w-4 h-4 mr-2" />Sign Out
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
+          {/* Mobile navigation tabs */}
+          <div className="lg:hidden mb-6 -mx-3 sm:-mx-4 px-3 sm:px-4">
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {navItems.map(({ id, icon: Icon, label, badge }) => (
+                <button key={id} onClick={() => setActiveTab(id)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors font-medium text-sm whitespace-nowrap flex-shrink-0 ${
+                    activeTab === id ? 'bg-[#003366] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}>
+                  <Icon className="w-4 h-4" />
+                  {label}
+                  {badge != null && badge > 0 && (
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                      activeTab === id ? 'bg-white text-[#003366]' : 'bg-red-500 text-white'
+                    }`}>{badge}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+            {/* Sidebar - hidden on mobile */}
+            <div className="hidden lg:block lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm p-4 sticky top-24">
                 <nav className="space-y-1">
                   {navItems.map(({ id, icon: Icon, label, badge }) => (
@@ -278,20 +300,20 @@ export default function Dashboard() {
             </div>
 
             {/* Main content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
 
               {/* OVERVIEW TAB */}
               {activeTab === 'overview' && (
                 <>
                   {/* Year level banner */}
                   {profile.yearOfStudy && profile.totalYears && (
-                    <div className="bg-gradient-to-r from-[#003366] to-[#1a4d7a] text-white rounded-xl p-4 flex items-center justify-between flex-wrap gap-3">
+                    <div className="bg-gradient-to-r from-[#003366] to-[#1a4d7a] text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div>
                         <p className="text-blue-200 text-xs uppercase tracking-wide">Current Level</p>
                         <p className="text-xl font-bold">Year {profile.yearOfStudy} of {profile.totalYears}</p>
                         <p className="text-blue-200 text-sm">{profile.program}</p>
                       </div>
-                      <div className="flex flex-col items-end gap-1">
+                      <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1">
                         {profile.yearOfStudy === profile.totalYears - 1 && (
                           <span className="bg-[#d4a574] text-white text-xs font-bold px-3 py-1 rounded-full">
                             Penultimate Year
@@ -309,25 +331,25 @@ export default function Dashboard() {
                   )}
 
                   {/* Stats */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {[
                       { label: 'Enrolled Courses', value: profile.enrolledCourses?.length ?? '—' },
                       { label: 'GPA', value: profile.gpa != null ? `${profile.gpa} / 4.0` : '—' },
                       { label: 'Credits Completed', value: profile.creditsCompleted ?? '—' },
                     ].map((s, i) => (
-                      <div key={i} className="bg-white rounded-xl shadow-sm p-6">
-                        <p className="text-gray-500 text-sm mb-1">{s.label}</p>
-                        <p className="text-3xl font-bold text-[#003366]">{s.value}</p>
+                      <div key={i} className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                        <p className="text-gray-500 text-xs sm:text-sm mb-1 font-medium">{s.label}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-[#003366]">{s.value}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Personal details */}
-                  <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                     <h2 className="text-lg font-bold text-[#003366] mb-4 flex items-center gap-2">
                       <User className="w-5 h-5" /> Personal Details
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                       {[
                         ['Full Name', profile.displayName],
                         ['Preferred Name', profile.preferredName || '—'],
@@ -343,9 +365,9 @@ export default function Dashboard() {
                         ['Program', profile.program || '—'],
                         ['Year of Study', profile.yearOfStudy ? `Year ${profile.yearOfStudy} of ${(profile as any).totalYears || 4}` : '—'],
                       ].map(([label, value]) => (
-                        <div key={label} className="flex flex-col">
-                          <span className="text-gray-500 text-xs uppercase tracking-wide">{label}</span>
-                          <span className="font-medium text-gray-800">{value}</span>
+                        <div key={label} className="flex flex-col min-w-0">
+                          <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">{label}</span>
+                          <span className="font-medium text-gray-800 truncate">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -353,9 +375,9 @@ export default function Dashboard() {
 
                   {/* Residence */}
                   {profile.residence && (
-                    <div className="bg-white rounded-xl shadow-sm p-6">
+                    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                       <h2 className="text-lg font-bold text-[#003366] mb-4">🏠 Residence & Housing</h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                         {[
                           ['Residence', profile.residence.name],
                           ['Room', profile.residence.room],
@@ -371,9 +393,9 @@ export default function Dashboard() {
                             : 'text-gray-800';
 
                           return (
-                            <div key={label} className="flex flex-col">
-                              <span className="text-gray-500 text-xs uppercase tracking-wide">{label}</span>
-                              <span className={`font-medium ${isFeeStatus ? feeClass : 'text-gray-800'}`}>{value}</span>
+                            <div key={label} className="flex flex-col min-w-0">
+                              <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">{label}</span>
+                              <span className={`font-medium truncate ${isFeeStatus ? feeClass : 'text-gray-800'}`}>{value}</span>
                             </div>
                           );
                         })}
@@ -385,23 +407,23 @@ export default function Dashboard() {
 
               {/* COURSES TAB */}
               {activeTab === 'courses' && (
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-lg font-bold text-[#003366] mb-6 flex items-center gap-2">
+                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                  <h2 className="text-lg font-bold text-[#003366] mb-4 sm:mb-6 flex items-center gap-2">
                     <BookOpen className="w-5 h-5" /> Enrolled Courses – 2026
                   </h2>
                   {profile.enrolledCourses?.length > 0 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {profile.enrolledCourses.map((course, i) => (
-                        <div key={i} className="border border-gray-200 rounded-xl p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <div>
-                              <p className="font-bold text-gray-800">{course.code}</p>
-                              <p className="text-gray-600 text-sm">{course.name}</p>
-                              <p className="text-xs text-gray-400 mt-1">{course.credits} credits &middot; {course.status}</p>
+                        <div key={i} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-2 mb-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-bold text-gray-800 truncate">{course.code}</p>
+                              <p className="text-gray-600 text-sm line-clamp-2">{course.name}</p>
+                              <p className="text-xs text-gray-400 mt-1">{course.credits} credits • {course.status}</p>
                             </div>
-                            <div className="text-right">
+                            <div className="text-right flex-shrink-0">
                               {course.currentMark != null && (
-                                <span className="text-lg font-bold text-[#003366]">{course.currentMark}%</span>
+                                <span className="text-lg sm:text-xl font-bold text-[#003366]">{course.currentMark}%</span>
                               )}
                             </div>
                           </div>
@@ -409,7 +431,7 @@ export default function Dashboard() {
                             <div className="bg-[#d4a574] h-2 rounded-full transition-all"
                               style={{ width: `${course.progress}%` }} />
                           </div>
-                          <p className="text-xs text-gray-400 mt-1 text-right">{course.progress}% progress</p>
+                          <p className="text-xs text-gray-400 mt-2 text-right">{course.progress}% progress</p>
                         </div>
                       ))}
                     </div>
@@ -421,33 +443,33 @@ export default function Dashboard() {
 
               {/* FINANCES TAB */}
               {activeTab === 'finances' && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {dataLoading ? (
-                    <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-500">
+                    <div className="bg-white rounded-xl shadow-sm p-6 sm:p-8 text-center text-gray-500">
                       <div className="w-8 h-8 border-4 border-[#003366] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                       Loading financial data...
                     </div>
                   ) : finances ? (
                     <>
                       {/* Financial Overview Cards */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-red-500">
-                          <p className="text-gray-500 text-sm font-medium">Total Due</p>
-                          <p className="text-2xl font-bold text-gray-800 mt-1">R{finances.totalDue.toLocaleString()}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-red-500">
+                          <p className="text-gray-500 text-xs sm:text-sm font-medium">Total Due</p>
+                          <p className="text-xl sm:text-2xl font-bold text-gray-800 mt-1">R{finances.totalDue.toLocaleString()}</p>
                           <p className="text-xs text-gray-400 mt-1">Academic year 2026</p>
                         </div>
-                        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-green-500">
-                          <p className="text-gray-500 text-sm font-medium">Paid to Date</p>
-                          <p className="text-2xl font-bold text-green-600 mt-1">R{finances.paidToDate.toLocaleString()}</p>
+                        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-green-500">
+                          <p className="text-gray-500 text-xs sm:text-sm font-medium">Paid to Date</p>
+                          <p className="text-xl sm:text-2xl font-bold text-green-600 mt-1">R{finances.paidToDate.toLocaleString()}</p>
                           <p className="text-xs text-green-600 mt-1">✓ Up to date</p>
                         </div>
-                        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-orange-500">
-                          <p className="text-gray-500 text-sm font-medium">Outstanding</p>
-                          <p className="text-2xl font-bold text-orange-600 mt-1">R{finances.outstanding.toLocaleString()}</p>
+                        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-orange-500">
+                          <p className="text-gray-500 text-xs sm:text-sm font-medium">Outstanding</p>
+                          <p className="text-xl sm:text-2xl font-bold text-orange-600 mt-1">R{finances.outstanding.toLocaleString()}</p>
                           <p className="text-xs text-orange-600 mt-1">⚠ Requires attention</p>
                         </div>
-                        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500">
-                          <p className="text-gray-500 text-sm font-medium">Payment Progress</p>
+                        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-blue-500">
+                          <p className="text-gray-500 text-xs sm:text-sm font-medium">Payment Progress</p>
                           <p className="text-2xl font-bold text-blue-600 mt-1">
                             {Math.round((finances.paidToDate / finances.totalDue) * 100)}%
                           </p>
