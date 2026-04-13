@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { LogOut, User, BookOpen, Bell, Settings, Home, CreditCard, Clock, AlertTriangle } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -124,34 +125,84 @@ export default function Dashboard() {
 
   const downloadTimetable = () => {
     if (timetable.length === 0) return;
+
+    const doc = new jsPDF();
     const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const lines: string[] = [
-      '📚 Business Administration & Tourism Weekly Timetable',
-      '',
-    ];
+    let yPosition = 20;
+
+    // Header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('University of Cape Town', 20, yPosition);
+    yPosition += 8;
+
+    doc.setFontSize(14);
+    doc.text('Weekly Timetable', 20, yPosition);
+    yPosition += 6;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Faculty of Business / Management Sciences', 20, yPosition);
+    yPosition += 4;
+    doc.text('Business Administration & Tourism | Year 4 (400 Level)', 20, yPosition);
+    yPosition += 4;
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`, 20, yPosition);
+    yPosition += 10;
+
+    // Reset text color
+    doc.setTextColor(0);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
 
     dayOrder.forEach(day => {
       const entries = timetable
         .filter(entry => entry.day === day)
         .sort((a, b) => a.time.localeCompare(b.time));
-      if (!entries.length) return;
-      lines.push(`🗓️ ${day}`);
+
+      if (entries.length === 0) return;
+
+      // Day header
+      doc.setFillColor(0, 51, 102);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(20, yPosition, 170, 6, 'F');
+      doc.text(`${day}`, 23, yPosition + 4);
+      yPosition += 8;
+
+      doc.setTextColor(0);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+
       entries.forEach(entry => {
-        lines.push(`${entry.time} → ${entry.subject}`);
+        const timeStr = `${entry.time}`;
+        const typeStr = `[${entry.type}]`;
+
+        doc.text(`${timeStr}`, 25, yPosition);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${entry.subject}`, 50, yPosition);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(100);
+        doc.text(typeStr, 140, yPosition);
+        doc.setTextColor(0);
+        doc.setFont('helvetica', 'normal');
+        yPosition += 5;
+
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = 20;
+        }
       });
-      lines.push('');
+
+      yPosition += 4;
     });
 
-    lines.push('📘 400 Level (Year 4 – Professional Level)');
-    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'UCT-Business-Administration-Timetable.txt';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    URL.revokeObjectURL(url);
+    // Footer
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text('This timetable is subject to change. Check the portal for updates.', 20, doc.internal.pageSize.getHeight() - 10);
+
+    doc.save('UCT-Business-Administration-Timetable.pdf');
   };
 
   return (
