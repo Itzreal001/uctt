@@ -7,7 +7,7 @@
   },
   "functions": {
     "server/index.ts": {
-      "runtime": "nodejs20.x",
+      "runtime": "@vercel/node@20",
       "memory": 1024,
       "maxDuration": 60
     }
