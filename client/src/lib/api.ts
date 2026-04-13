@@ -16,7 +16,7 @@ const HARDCODED_PROFILE = {
   studentNumber: "STU-2024-001",
   preferredName: "Rebecca",
   photoURL: null,
-  faculty: "Business Administration & Tourism",
+  faculty: "Faculty of Business / Management Sciences",
   program: "Business Administration and Tourism",
   yearOfStudy: 4,
   totalYears: 4,
