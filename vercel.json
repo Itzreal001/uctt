@@ -1,20 +1,11 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "installCommand": "pnpm install",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "api/index.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
+  "outputDirectory": "dist/public",
   "rewrites": [
     {
-      "source": "(.*)",
-      "destination": "/api/index.ts"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

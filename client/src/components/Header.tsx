@@ -13,6 +13,7 @@ export default function Header() {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Study at UCT', href: '/study' },
+    { label: 'Admissions', href: '/admissions' },
     { label: 'Campus Life', href: '/campus-life' },
     { label: 'Research', href: '/research' },
     { label: 'News', href: '/news' },

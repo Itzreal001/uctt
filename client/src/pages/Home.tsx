@@ -149,7 +149,10 @@ export default function Home() {
       {/* Featured News */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-[#003366] mb-12">Latest News & Updates</h2>
+          <h2 className="text-4xl font-bold text-[#003366] mb-4">Latest News & Updates</h2>
+          <p className="text-gray-600 max-w-2xl mb-10">
+            Keep up with the latest announcements from admissions, research, campus life and student services — all in one place.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
@@ -177,10 +180,53 @@ export default function Home() {
                   <p className="text-sm text-[#d4a574] font-semibold mb-2">{news.date}</p>
                   <h3 className="text-xl font-bold text-[#003366] mb-3">{news.title}</h3>
                   <p className="text-gray-600 mb-4">{news.excerpt}</p>
-                  <a href="#" className="text-[#003366] font-semibold hover:text-[#d4a574] transition-colors">
+                  <Link href="/news" className="text-[#003366] font-semibold hover:text-[#d4a574] transition-colors">
                     Read More →
-                  </a>
+                  </Link>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Admissions Preview */}
+      <section className="bg-[#f7f9fc] py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10">
+            <div>
+              <p className="text-[#d4a574] uppercase tracking-[0.35em] text-sm mb-3">Admissions spotlight</p>
+              <h2 className="text-4xl font-bold text-[#003366]">Important deadlines and next steps.</h2>
+            </div>
+            <Link href="/admissions">
+              <Button className="bg-[#003366] hover:bg-[#002a55] text-white">View Admissions</Button>
+            </Link>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                title: 'Early application review',
+                excerpt: 'Submit your application before June 1 for priority consideration and scholarship review.',
+                label: 'Admissions',
+              },
+              {
+                title: 'Information sessions',
+                excerpt: 'Join our weekly virtual open houses and meet faculty leaders from every programme.',
+                label: 'Events',
+              },
+              {
+                title: 'Student support launch',
+                excerpt: 'New onboarding resources are available for admitted students and families.',
+                label: 'Student Life',
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-lg transition-shadow">
+                <span className="inline-flex rounded-full bg-[#003366] px-3 py-1 text-sm font-semibold text-white mb-5">
+                  {item.label}
+                </span>
+                <h3 className="text-2xl font-semibold text-[#003366] mb-3">{item.title}</h3>
+                <p className="text-gray-600">{item.excerpt}</p>
               </div>
             ))}
           </div>
