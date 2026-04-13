@@ -16,12 +16,12 @@ const HARDCODED_PROFILE = {
   studentNumber: "STU-2024-001",
   preferredName: "Rebecca",
   photoURL: null,
-  faculty: "Engineering",
-  program: "Computer Science",
+  faculty: "Business",
+  program: "Business Administration and Tourism",
   yearOfStudy: 3,
   totalYears: 4,
   academicStanding: "Good",
-  department: "Computer Science",
+  department: "Business Administration and Tourism",
   gpa: 3.8,
   creditsCompleted: 90,
   enrolledCourses: [
@@ -62,12 +62,15 @@ const HARDCODED_PROFILE = {
     name: "Tugela Hall",
     room: "B-204",
     mealPlan: "Full Board",
-    feeStatus: "Paid",
+    feeStatus: "Unpaid",
     houseCommitteeRole: "Vice President",
   },
   lastLogin: new Date().toISOString(),
   createdAt: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(),
   updatedAt: new Date().toISOString(),
+  dateOfBirth: '1995-09-15',
+  homeLanguage: 'Spanish/English',
+  cellNumber: '+1 626 8247898',
 };
 
 async function getCurrentUser(): Promise<string | null> {

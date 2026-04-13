@@ -279,12 +279,21 @@ export default function Dashboard() {
                           ['Meal Plan', profile.residence.mealPlan],
                           ['Fee Status', profile.residence.feeStatus],
                           ['House Committee Role', profile.residence.houseCommitteeRole || '—'],
-                        ].map(([label, value]) => (
-                          <div key={label} className="flex flex-col">
-                            <span className="text-gray-500 text-xs uppercase tracking-wide">{label}</span>
-                            <span className="font-medium text-gray-800">{value}</span>
-                          </div>
-                        ))}
+                        ].map(([label, value]) => {
+                          const isFeeStatus = label === 'Fee Status';
+                          const feeClass = isFeeStatus && String(value).toLowerCase().includes('unpaid')
+                            ? 'text-red-700 bg-red-100 rounded-full px-2 py-1'
+                            : isFeeStatus && String(value).toLowerCase().includes('paid')
+                            ? 'text-green-700 bg-green-100 rounded-full px-2 py-1'
+                            : 'text-gray-800';
+
+                          return (
+                            <div key={label} className="flex flex-col">
+                              <span className="text-gray-500 text-xs uppercase tracking-wide">{label}</span>
+                              <span className={`font-medium ${isFeeStatus ? feeClass : 'text-gray-800'}`}>{value}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

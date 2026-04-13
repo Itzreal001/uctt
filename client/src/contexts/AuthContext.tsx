@@ -27,6 +27,10 @@ interface UserProfile {
   creditsCompleted: number;
   enrolledCourses: Course[];
   residence: ResidenceInfo | null;
+  dateOfBirth: string | null;
+  homeLanguage: string | null;
+  cellNumber: string | null;
+  nationality?: string | null;
   lastLogin: string | null;
   createdAt: string;
   updatedAt: string;
