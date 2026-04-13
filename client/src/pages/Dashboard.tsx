@@ -27,7 +27,7 @@ interface Notification {
 interface TimetableEntry {
   day: string;
   time: string;
-  courseCode: string;
+  subject: string;
   type: string;
 }
 
@@ -116,10 +116,42 @@ export default function Dashboard() {
   ];
 
   const statusColor = (status: string) => {
-    if (status.includes('✅') || (status.toLowerCase().includes('paid') && !status.includes('❌'))) return 'text-green-700 bg-green-100';
+    if (status.includes('✅') || (status.toLowerCase().includes('paid') && !status.includes('❌') && !status.toLowerCase().includes('partially'))) return 'text-green-700 bg-green-100';
     if (status.includes('❌') || status.toLowerCase().includes('unpaid')) return 'text-red-700 bg-red-100';
-    if (status.toLowerCase().includes('partially') || status.toLowerCase().includes('covered')) return 'text-yellow-700 bg-yellow-100';
+    if (status.toLowerCase().includes('partially') || status.toLowerCase().includes('partial')) return 'text-yellow-700 bg-yellow-100';
     return 'text-blue-700 bg-blue-100';
+  };
+
+  const downloadTimetable = () => {
+    if (timetable.length === 0) return;
+    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const lines: string[] = [
+      '📚 Business Administration & Tourism Weekly Timetable',
+      '',
+    ];
+
+    dayOrder.forEach(day => {
+      const entries = timetable
+        .filter(entry => entry.day === day)
+        .sort((a, b) => a.time.localeCompare(b.time));
+      if (!entries.length) return;
+      lines.push(`🗓️ ${day}`);
+      entries.forEach(entry => {
+        lines.push(`${entry.time} → ${entry.subject}`);
+      });
+      lines.push('');
+    });
+
+    lines.push('📘 400 Level (Year 4 – Professional Level)');
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'UCT-Business-Administration-Timetable.txt';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -528,18 +560,23 @@ export default function Dashboard() {
               {/* TIMETABLE TAB */}
               {activeTab === 'timetable' && (
                 <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-lg font-bold text-[#003366] mb-6 flex items-center gap-2">
-                    <Clock className="w-5 h-5" /> Weekly Timetable
-                  </h2>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                    <h2 className="text-lg font-bold text-[#003366] flex items-center gap-2">
+                      <Clock className="w-5 h-5" /> Weekly Timetable
+                    </h2>
+                    <Button onClick={downloadTimetable} variant="outline" className="border-[#003366] text-[#003366] hover:bg-[#003366] hover:text-white">
+                      Download Timetable
+                    </Button>
+                  </div>
                   {timetable.length > 0 ? (() => {
-                    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                     const times = Array.from(new Set(timetable.map(e => e.time))).sort();
                     return (
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm border-collapse">
                           <thead>
                             <tr>
-                              <th className="p-2 text-left text-gray-500 font-medium w-20">Time</th>
+                              <th className="p-2 text-left text-gray-500 font-medium w-28">Time</th>
                               {days.map(d => <th key={d} className="p-2 text-center text-gray-500 font-medium">{d}</th>)}
                             </tr>
                           </thead>
@@ -550,11 +587,11 @@ export default function Dashboard() {
                                 {days.map(day => {
                                   const entry = timetable.find(e => e.day === day && e.time === time);
                                   return (
-                                    <td key={day} className="p-2 text-center">
+                                    <td key={day} className="p-2 text-center align-top">
                                       {entry ? (
                                         <div className="bg-[#003366]/10 text-[#003366] rounded-lg p-2">
-                                          <p className="font-bold text-xs">{entry.courseCode}</p>
-                                          <p className="text-xs opacity-70">{entry.type}</p>
+                                          <p className="font-semibold text-xs">{entry.subject}</p>
+                                          <p className="text-[10px] uppercase tracking-[0.08em] opacity-80 mt-1">{entry.type}</p>
                                         </div>
                                       ) : null}
                                     </td>
